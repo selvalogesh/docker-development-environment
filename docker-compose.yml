@@ -1,0 +1,32 @@
+name: devenv
+
+services:
+  devenv:
+    build:
+      context: .
+      args:
+        NODE_VERSIONS: ${NODE_VERSIONS:-lts/* 20}
+        INSTALL_PYTHON: ${INSTALL_PYTHON:-true}
+        INSTALL_RUST: ${INSTALL_RUST:-false}
+        INSTALL_GO: ${INSTALL_GO:-false}
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+    image: devenv:latest
+    container_name: devenv
+    hostname: devenv
+    init: true
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      # A named volume by default (fast file I/O on Windows and macOS).
+      # Set WORKSPACE to a host path, e.g. WORKSPACE=E:/VSCode, to bind-mount your projects instead.
+      - ${WORKSPACE:-workspaces}:/workspaces
+      # VS Code server and extensions, so reconnecting after a rebuild is quick
+      - vscode-server:/home/dev/.vscode-server
+      - commandhistory:/commandhistory
+
+volumes:
+  workspaces:
+  vscode-server:
+  commandhistory:

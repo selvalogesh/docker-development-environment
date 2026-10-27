@@ -1,0 +1,19 @@
+{
+  "name": "devenv",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "devenv",
+  "workspaceFolder": "/workspaces",
+  "remoteUser": "dev",
+  // Keep the container running after this window closes; other windows may be attached to it
+  "shutdownAction": "none",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "EditorConfig.EditorConfig",
+        "ms-python.python"
+      ]
+    }
+  }
+}
