@@ -9,6 +9,8 @@ services:
         INSTALL_PYTHON: ${INSTALL_PYTHON:-true}
         INSTALL_RUST: ${INSTALL_RUST:-false}
         INSTALL_GO: ${INSTALL_GO:-false}
+        INSTALL_JAVA: ${INSTALL_JAVA:-false}
+        JAVA_VERSION: ${JAVA_VERSION:-21}
         USER_UID: ${USER_UID:-1000}
         USER_GID: ${USER_GID:-1000}
     image: devenv:latest

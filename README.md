@@ -6,7 +6,7 @@ One shared Ubuntu development container that VS Code connects to. Every project 
 - Ubuntu 24.04, non-root `dev` user with passwordless `sudo`
 - Node via nvm (several versions side by side), with pnpm and yarn through corepack
 - Python 3 with pip, venv and pipx
-- Optional Rust and Go
+- Optional Rust, Go and Java (OpenJDK with Maven)
 - git, build-essential, curl, jq, vim, nano and other basics
 - Persistent volumes for projects, VS Code server/extensions and shell history, so rebuilding
   the image never loses work
@@ -71,6 +71,8 @@ docker compose up -d --build
 | `INSTALL_PYTHON` | `true` | Python 3, pip, venv, pipx |
 | `INSTALL_RUST` | `false` | rustup with rustfmt and clippy |
 | `INSTALL_GO` | `false` | Latest Go release |
+| `INSTALL_JAVA` | `false` | OpenJDK and Maven; Gradle projects use their own `./gradlew` |
+| `JAVA_VERSION` | `21` | OpenJDK major version (`17` or `21`) |
 | `TZ` | `UTC` | Container time zone, e.g. `Asia/Kolkata` |
 | `USER_UID` / `USER_GID` | `1000` | Match your host user when bind-mounting on Linux |
 
@@ -85,6 +87,9 @@ To back up the projects volume to a tarball in the current folder:
 ```sh
 docker run --rm -v devenv_workspaces:/w -v "$PWD":/backup ubuntu tar czf /backup/workspaces.tgz -C /w .
 ```
+
+With Java enabled, also add `"vscjava.vscode-java-pack"` to the extensions list in
+`.devcontainer/devcontainer.json`.
 
 ## Adding tools
 

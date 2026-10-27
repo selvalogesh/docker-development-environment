@@ -12,6 +12,9 @@ ARG INSTALL_RUST=false
 ARG INSTALL_GO=false
 # "latest" or an exact version such as 1.23.2
 ARG GO_VERSION=latest
+ARG INSTALL_JAVA=false
+# OpenJDK major version from the Ubuntu archive (17 or 21)
+ARG JAVA_VERSION=21
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8
@@ -51,6 +54,16 @@ RUN if [ "$INSTALL_GO" = "true" ]; then \
         [ "$version" = "latest" ] && version="$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -1 | sed 's/^go//')"; \
         curl -fsSL "https://go.dev/dl/go${version}.linux-$(dpkg --print-architecture).tar.gz" | tar -C /usr/local -xz; \
     fi
+
+# Java with Maven; use each project's Gradle wrapper (./gradlew) for Gradle builds.
+# /usr/lib/jvm/current gives JAVA_HOME the same path on every architecture.
+RUN if [ "$INSTALL_JAVA" = "true" ]; then \
+        apt-get update \
+        && apt-get install -y -q --no-install-recommends "openjdk-${JAVA_VERSION}-jdk-headless" maven \
+        && rm -rf /var/lib/apt/lists/* \
+        && ln -s "/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-$(dpkg --print-architecture)" /usr/lib/jvm/current; \
+    fi
+ENV JAVA_HOME=/usr/lib/jvm/current
 
 # Non-root user with passwordless sudo. Ubuntu 24.04 ships an "ubuntu" user on UID 1000;
 # remove it so ours can take that UID and bind-mounted files keep the host user's ownership.
